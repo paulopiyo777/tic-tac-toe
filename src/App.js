@@ -1,26 +1,82 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import Square from './Square';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {
+    board: ["", "", "",
+            "", "", "",
+            "", "", ""],
+
+    turn: 'X'
+  }
+
+  playerWon() {
+    const board = this.state.board;
+    const winningConditions = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (let i = 0; i < winningConditions.length; i++) {
+      const [a, b, c] = winningConditions[i];
+      // check if someone has won
+      if (board[a] !== '' && board[a]===board[b] && board[b]===board[c]) {
+        return board[a];
+      }
+    }
+    // check if the board if full or not
+    let isBoardFull = true;
+    for (let i=0; i < board.length; i++){
+      if (board[i]==='') {
+        isBoardFull = false;
+        break;
+      }
+    }
+
+    if (!isBoardFull) {
+      return '';
+    } else {
+      return 'tie';
+    }
+  }
+
+  updateBoard(i) {
+    let board = this.state.board.slice();
+    let turn = this.state.turn;
+    if (board[i]==='') {
+      board[i] = turn;
+      turn = turn === 'O' ? 'X' : 'O';
+    }
+    this.setState({
+      board, // short for board: board,
+      turn,
+    })
+  }
+
+  //<Square value={this.state.board[0]} handleClick={this.updateBoard.bind(this, 0)}/>
+
+  render(){
+    return (
+      <div>
+        <h1>Tic-Tac Toe</h1>
+        <h1>{this.playerWon()}</h1>
+        <div><Square value={this.state.board[0]} handleClick={this.updateBoard.bind(this, 0)}/>
+        <Square value={this.state.board[1]} handleClick={this.updateBoard.bind(this, 1)}/>
+        <Square value={this.state.board[2]} handleClick={this.updateBoard.bind(this, 2)}/></div>
+        <div><Square value={this.state.board[3]} handleClick={this.updateBoard.bind(this, 3)}/>
+        <Square value={this.state.board[4]} handleClick={this.updateBoard.bind(this, 4)}/>
+        <Square value={this.state.board[5]} handleClick={this.updateBoard.bind(this, 5)}/></div>
+        <div><Square value={this.state.board[6]} handleClick={this.updateBoard.bind(this, 6)}/>
+        <Square value={this.state.board[7]} handleClick={this.updateBoard.bind(this, 7)}/>
+        <Square value={this.state.board[8]} handleClick={this.updateBoard.bind(this, 8)}/></div>
+      </div>
+    );
+  }
 }
 
 export default App;
